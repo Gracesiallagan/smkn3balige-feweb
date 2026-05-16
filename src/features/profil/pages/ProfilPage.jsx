@@ -8,7 +8,7 @@ import { asyncLoadAllProfilData } from "../states/action";
 function toImgUrl(path) {
   if (!path) return null;
   if (path.startsWith("http")) return path;
-  return `http://localhost:3000/${path.replace(/\\/g, "/")}`;
+  return `http://localhost:6000/${path.replace(/\\/g, "/")}`;
 }
 
 // ── Hook: detect kapan elemen masuk viewport ──
