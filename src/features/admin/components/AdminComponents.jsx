@@ -1,15 +1,30 @@
 // src/features/admin/components/AdminComponents.jsx
 // Komponen reusable untuk semua halaman admin
 
-import { BASE_URL } from "../../../helpers/apiHelper";
+// 1. Ganti import apiHelper menjadi axios config kita
+
+// src/features/admin/components/AdminComponents.jsx
+
+import apiGateway from '../../../config/axios';
 
 // ── Normalize path gambar (handle backslash Windows) ─────────
 export function mediaUrl(filePath) {
   if (!filePath) return null;
+  
+  // Jika URL dari luar (misal https://google.com), tampilkan apa adanya
   if (filePath.startsWith("http")) return filePath;
+  
+  // Normalisasi backslash (untuk Windows) menjadi slash (/)
   const normalized = filePath.replace(/\\/g, "/");
-  const base = BASE_URL.replace("/api", ""); // http://localhost:3000
-  return `${base}/${normalized.replace(/^\//, "")}`;
+  
+  // Ambil baseURL dari config Axios (contoh: http://localhost:6766/api)
+  // Kita hilangkan tulisan '/api'-nya
+  const base = apiGateway.defaults.baseURL.replace("/api", ""); 
+  
+  // Gabungkan ke alamat Gateway milik Service Profile!
+  // Hasil akhirnya: http://localhost:6766/api/profile/struktur-organisasi/struktur-123.png
+  // *Sesuaikan "/api/profile/" jika routing file statis Nginx-mu berbeda
+  return `${base}/api/profile/${normalized.replace(/^\//, "")}`;
 }
 
 // ── Stat Card ─────────────────────────────────────────────────

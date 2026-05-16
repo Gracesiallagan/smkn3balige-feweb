@@ -1,8 +1,13 @@
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
+// 1. Import hook useAuth dari pabrik Keycloak kita
+import { useAuth } from "../../auth/context/AuthContext"; 
 
 export default function Navbar() {
   const [openDropdown, setOpenDropdown] = useState(null);
+  
+  // 2. Panggil status dan fungsi dari AuthContext
+  const { isAuth, login, logout } = useAuth();
 
   const toggleDropdown = (name) => {
     setOpenDropdown(openDropdown === name ? null : name);
@@ -11,6 +16,7 @@ export default function Navbar() {
   return (
     <header className="smk-navbar">
       <div className="smk-nav-inner">
+        
         {/* Logo */}
         <div className="smk-nav-logo">
           <div className="smk-logo-icon">
@@ -25,7 +31,7 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Menu */}
+        {/* Menu Publik */}
         <nav className="smk-nav-menu">
           <NavLink to="/" className={({ isActive }) => `smk-nav-item${isActive ? " smk-nav-active" : ""}`}>
             Beranda
@@ -73,8 +79,30 @@ export default function Navbar() {
           </div>
         </nav>
 
-        {/* Login */}
-        <button className="smk-btn-login">LOGIN</button>
+        {/* 3. Logic Tombol Login / Logout */}
+        <div className="smk-nav-auth">
+          {!isAuth ? (
+            // Jika belum login, tampilkan tombol Login Keycloak
+            <button onClick={login} className="smk-btn-login">
+              LOGIN
+            </button>
+          ) : (
+            // Jika sudah login, tampilkan tombol Dashboard dan Logout
+            <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+              <NavLink to="/admin" className="smk-btn-dashboard" style={{ color: "white", textDecoration: "none", fontWeight: "bold" }}>
+                Dashboard
+              </NavLink>
+              <button 
+                onClick={logout} 
+                className="smk-btn-login" 
+                style={{ backgroundColor: "#ef4444" }} // Contoh warna merah untuk tombol logout
+              >
+                LOGOUT
+              </button>
+            </div>
+          )}
+        </div>
+
       </div>
     </header>
   );
